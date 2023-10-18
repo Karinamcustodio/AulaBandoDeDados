@@ -55,27 +55,27 @@ alter table tb_compromissos drop column tb_locais_id;
 insert into tb_usuarios(nome, telefone, email) values('Karina', '(47)99616-1518','karina@gmail.com'), /*inserir valores = inserir linhas*/
 ('Bruno', '(47)99607-3075','bruno@gmail.com'), ('Felipe', '(47)99780-0128','felipe@gmail.com'), ('Carolina', '(47)99629-5384', 'carol@gmail.com');
 
-select * from tb_usuarios; /*visualizar as tabelas*/
+select * from tb_usuarios;
 
 insert into tb_locais(nome, rua, numero, bairro, cidade, estado) values('Loja', 'General Osório', '1283', 'Velha', 'Blumenau', 'Santa Catarina');
 
 select * from tb_locais;
 
-insert into tb_compromissos(descricao, data, hora, tb_usuarios_id, tb_locais_id) values('Inauguração coleção', '2023-11-01', '15:00:00', 1, 1),
-('Inauguração coleção', '2023-11-01', '15:00:00', 2, 1);
+insert into tb_compromissos(descricao, data, hora, tb_usuarios_id, tb_locais_id) values('Inauguração coleção', '2023-11-01', '15:00:00', 1, 1);
+insert into tb_compromissos(descricao, data, hora, tb_usuarios_id, tb_locais_id) values('Fazer contagem do estoque', '2023-10-31', '07:00:00', 2, 1);
 
 insert into tb_compromissos_has_tb_usuarios(tb_compromissos_id, tb_usuarios_id) values(6, 2), (6, 1);
+insert into tb_compromissos_has_tb_usuarios(tb_compromissos_id, tb_usuarios_id) values(7, 2);
 
 delete from tb_compromissos where id < 5; /*deletar da tabela compromissos o id menor que 5*/
-delete from tb_compromissos where tb_compromissos_id = 1; /*verificar se esta certo*/
+delete from tb_compromissos where id = 6; /*deletar somente um número de id especifico*/
 
-select * from tb_compromissos;
-
-select descricao, data, hora, nome from tb_compromissos, tb_usuarios where tb_compromissos.tb_usuarios_id = tb_usuarios.id;
-select descricao, data, hora, tb_usuarios.nome, tb_locais.nome from tb_compromissos, tb_usuarios, tb_locais where tb_compromissos.tb_usuarios_id = tb_usuarios.id && tb_compromissos.tb_locais_id = tb_locais.id;
-select tb_compromissos.id, descricao, data, hora, tb_usuarios.nome, tb_locais.nome from tb_compromissos, tb_usuarios, tb_locais where tb_compromissos.tb_usuarios_id = tb_usuarios.id && tb_compromissos.tb_locais_id = tb_locais.id;
-select tb_compromissos.id, descricao, data, hora, tb_usuarios.nome as usuario, tb_locais.nome as local from tb_compromissos, tb_usuarios, tb_locais where tb_compromissos.tb_usuarios_id = tb_usuarios.id && tb_compromissos.tb_locais_id = tb_locais.id; /*mudando o nome das colunas com AS*/
-select tb_compromissos.id, descricao, data, hora, tb_usuarios.nome as usuario from tb_compromissos inner join tb_usuarios on tb_compromissos.tb_usuarios_id = tb_usuarios.id where tb_compromissos.tb_usuarios_id = 2; /*Quando for pra ver somente o usuario espeficico*/
+select * from tb_compromissos; /*visualizar a tabela*/
+select descricao, data, hora, nome from tb_compromissos, tb_usuarios where tb_compromissos.tb_usuarios_id = tb_usuarios.id; /*visualizar a tabela somente com descricao, data, hora e nome pegando de outra tabela*/
+select descricao, data, hora, tb_usuarios.nome, tb_locais.nome from tb_compromissos, tb_usuarios, tb_locais where tb_compromissos.tb_usuarios_id = tb_usuarios.id && tb_compromissos.tb_locais_id = tb_locais.id; /*visualizar a tabela somente com descricao, data, hora e nome pegando de uma outra tabela e nome pegando de mais uma outra tabela*/
+select tb_compromissos.id, descricao, data, hora, tb_usuarios.nome, tb_locais.nome from tb_compromissos, tb_usuarios, tb_locais where tb_compromissos.tb_usuarios_id = tb_usuarios.id && tb_compromissos.tb_locais_id = tb_locais.id; /*visualizar a tabela igual a tabela de cima só colocando a coluna de id também*/
+select tb_compromissos.id, descricao, data, hora, tb_usuarios.nome as usuario, tb_locais.nome as local from tb_compromissos, tb_usuarios, tb_locais where tb_compromissos.tb_usuarios_id = tb_usuarios.id && tb_compromissos.tb_locais_id = tb_locais.id; /*visualizar a tabela mudando o nome das colunas com AS*/
+select tb_compromissos.id, descricao, data, hora, tb_usuarios.nome as usuario from tb_compromissos inner join tb_usuarios on tb_compromissos.tb_usuarios_id = tb_usuarios.id where tb_compromissos.tb_usuarios_id = 2; /*visualizar a tabela quando for pra ver somente o usuario espeficico*/
 
 select * from tb_compromissos_has_tb_usuarios;
 select tb_usuarios.nome as usuario, tb_compromissos.descricao as compromisso from tb_compromissos_has_tb_usuarios, tb_compromissos, tb_usuarios where tb_compromissos_has_tb_usuarios.tb_usuarios_id = tb_usuarios.id && tb_compromissos_has_tb_usuarios.tb_compromissos_id = tb_compromissos.id;
