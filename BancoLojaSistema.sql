@@ -1,149 +1,160 @@
-create table tb_clientes(
-id int not null auto_increment, 
+create table clientes(
+id int primary key auto_increment, 
 nome varchar(100) not null,
-cpf varchar(11) not null,
+cpf varchar(14) not null,
 email varchar(150), 
 telefone varchar(14) not null,
-rua varchar(45),
-numero int,
-bairro varchar(45),
-cidade varchar(45),
-estado varchar(45),
-primary key(id) 
+endereco_id int
 );
-drop table tb_clientes;
 
-create table tb_categorias(
-id int not null auto_increment,
-descricao varchar(45) not null,
-primary key(id)
-);
-drop table tb_categorias;
-
-create table tb_fornecedores(
-id int not null auto_increment, 
-nome varchar(100) not null,
-cnpj varchar(14) not null,
+create table fornecedores(
+id int primary key auto_increment, 
+nomeFantasia varchar(100) not null,
+cnpj varchar(18) not null,
 email varchar(150) not null, 
 telefone varchar(14) not null,
+endereco_id int
+);
+
+create table endereco(
+id int primary key auto_increment,
 rua varchar(45),
 numero int,
 bairro varchar(45),
 cidade varchar(45),
-estado varchar(45),
-primary key(id) 
+estado varchar(45)
 );
-drop table tb_fornecedores;
 
-create table tb_produtos(
-id int not null auto_increment, 
-nome varchar(100) not null,
-unidade varchar(10) not null,
-tamanho varchar(10),
-cor varchar(45),
-quantidadeEstoque int not null,
-valorTotal decimal not null not null,
-tb_categorias_id int not null,
-foreign key(tb_categorias_id) references tb_categorias(id),
-primary key(id) 
+alter table clientes add constraint fk_enderecoClientes foreign key (endereco_id) references endereco(id);
+alter table fornecedores add constraint fk_enderecoFornecedores foreign key (endereco_id) references endereco(id);
+
+create table categorias(
+id int primary key auto_increment,
+descricaoCategoria varchar(45) not null
 );
-drop table tb_produtos;
 
-create table tb_fornecedores_tb_produtos(
-tb_fornecedores_id int not null,
-tb_produtos_id int not null,
-foreign key(tb_fornecedores_id) references tb_fornecedores(id),
-foreign key(tb_produtos_id) references tb_produtos(id),
-codigo varchar(45) not null,
-unidade varchar(10) not null,
-valorUnitario decimal not null
+create table produtos(
+id int primary key auto_increment, 
+descricaoProduto varchar(100) not null,
+unidadeMedida varchar(10) not null,
+categorias_id int not null
 );
-drop table tb_fornecedores_tb_produtos;
 
-create table tb_vendas(
-id int not null auto_increment,
-tb_clientes_id int not null,
-foreign key(tb_clientes_id) references tb_clientes(id),
-quantidade int not null,
-valorTotal decimal not null,
-pagamentoForma varchar(45) not null,
-primary key(id) 
+alter table produtos add constraint fk_categorias foreign key (categorias_id) references categorias(id);
+
+create table estoque(
+id int primary key auto_increment,
+produtos_id int not null,
+tamanhoProduto varchar(10),
+corProduto varchar(45),
+quantidadeEstoque int not null
 );
-drop table tb_vendas;
 
-create table tb_compras(
-id int not null auto_increment,
-quantidade int not null,
-valorTotal decimal not null,
-pagamentoForma varchar(45),
-primary key(id) 
+alter table estoque add constraint fk_produtos foreign key (produtos_id) references produtos(id);
+
+create table fornecedores_produtos(
+fornecedores_id int not null,
+produtos_id int not null,
+codigoProdutoFornecedor varchar(45) not null,
+unidadeMedidaFornecedor varchar(10) not null,
+valorUnitario decimal(6,2) not null
 );
-drop table tb_compras;
 
-create table tb_contasApagar(
-id int not null auto_increment,
-tb_compras_id int not null,
-foreign key(tb_compras_id) references tb_compras(id),
-primary key(id) 
+alter table fornecedores_produtos add constraint fk_fornecedores foreign key (fornecedores_id) references fornecedores(id);
+alter table fornecedores_produtos add constraint fk_produtosFornecedores foreign key (produtos_id) references produtos(id); 
+
+create table vendas(
+id int primary key auto_increment,
+clientes_id int not null,
+quantidadeProdutos int not null,
+valorTotal decimal(10,2) not null,
+formaPagamento varchar(45) not null
 );
-drop table tb_contasApagar;
 
-create table tb_contasAreceber(
-id int not null auto_increment,
-tb_vendas_id int not null,
-foreign key(tb_vendas_id) references tb_vendas(id),
-primary key(id) 
+alter table vendas add constraint fk_clientes foreign key (clientes_id) references clientes(id);
+
+create table compras(
+id int primary key auto_increment,
+quantidadeProdutos int not null,
+valorTotal decimal(10,2) not null,
+formaPagamento varchar(45) not null
 );
-drop table tb_contasAreceber;
 
-create table tb_Compras_tb_Produtos(
-tb_compras_id int not null,
-tb_produtos_id int not null,
-foreign key(tb_compras_id) references tb_compras(id),
-foreign key(tb_produtos_id) references tb_produtos(id),
-quantidade int not null,
-valorUnitario decimal not null,
-unidade varchar(10) not null
+create table compras_produtos(
+compras_id int,
+produtos_id int,
+quantidadeProdutos int not null,
+valorCompra decimal(6,2) not null,
+unidadeMedida varchar(10) not null
 );
-drop table tb_Compras_tb_Produtos;
 
-create table tb_Produtos_tb_Vendas(
-tb_vendas_id int not null,
-tb_produtos_id int not null,
-foreign key(tb_vendas_id) references tb_vendas(id),
-foreign key(tb_produtos_id) references tb_produtos(id),
-quantidade int not null,
-valor decimal not null,
-unidade varchar(10) not null
+alter table compras_produtos add constraint fk_compras foreign key (compras_id) references compras(id);
+alter table compras_produtos add constraint fk_produtosCompras foreign key (produtos_id) references produtos(id);
+
+create table vendas_produtos(
+vendas_id int not null,
+produtos_id int not null,
+quantidadeProdutos int not null,
+valorVenda decimal(6,2) not null,
+unidadeMedida varchar(10) not null
 );
-drop table tb_Produtos_tb_Vendas;
 
-insert into tb_clientes(nome, cpf, email, telefone, rua, numero, bairro, cidade, estado) 
-values('Karina', '08825444974', 'karina@gmail.com', '(47)99616-1518', 'General Osorio', '1283', 'Velha', 'Blumenau', 'SC'),
-('Bruno', '25684201532', 'bruno@gmail.com', '(47)99607-3075', 'General Osorio', '1283', 'Velha', 'Blumenau', 'SC'), 
-('Felipe', '35478965420', 'felipe@gmail.com', '(47)99780-0128', 'General Osorio', '1283', 'Velha', 'Blumenau', 'SC'), 
-('Carolina', '65842698782', 'carol@gmail.com', '(47)99629-5384', 'General Osorio', '1283', 'Velha', 'Blumenau', 'SC');
-select * from tb_clientes;
+alter table vendas_produtos add constraint fk_vendas foreign key(vendas_id) references vendas(id);
+alter table vendas_produtos add constraint fk_produtosVendas foreign key(produtos_id) references produtos(id);
 
-insert into tb_categorias(descricao) values('Blusas'), ('Calças'), ('Shorts'), ('Saias'), ('Vestidos');
-select * from tb_categorias;
+create table contasAPagar(
+id int primary key auto_increment,
+compras_id int not null 
+);
 
-insert into tb_fornecedores(nome, cnpj, email, telefone, rua, numero, bairro, cidade, estado)
-values('Aradefe', '82120460000118', 'contato@aradefe.com', '(47)3255-0000', 'Rod. Antônio Heil', '5320', 'Limoeiro', 'Brusque', 'SC'),
-('JLM Tecidos', '04957761000197', 'contato@jlmtecidos.com', '(47) 3351-1222', 'Rod. Antônio Heil', '339', 'Centro 2', 'Brusque', 'SC');
-select * from tb_fornecedores;
+alter table contasAPagar add constraint fk_comprasPagar foreign key (compras_id) references compras(id);
 
-insert into tb_produtos(nome, unidade, tamanho, cor, quantidadeEstoque, valorTotal, tb_categorias_id)
-values('camiseta polo', 'pc', 'G', 'Branco', '10', '499.00', 1 ),
-('saia curta', 'pc', 'P', 'Nude', '25', '822.50', 4),
-('vestido de alça midi', 'pc', 'M', 'Verde', '12', '1558.80', 5);
-select * from tb_produtos;
+create table contasAReceber(
+id int primary key auto_increment,
+vendas_id int not null
+);
 
-alter table tb_fornecedores_tb_produtos add column valorUnitario decimal(6,2);
-insert into tb_fornecedores_tb_produtos(tb_fornecedores_id, tb_produtos_id, codigo, unidade, valorUnitario)
-values (2, 3, '325V', 'pc', 129.90);
-select * from tb_fornecedores_tb_produtos;
+alter table contasAReceber add constraint fk_vendasPagar foreign key (vendas_id) references vendas(id);
 
-insert into tb_vendas(tb_clientes_id, quantidade, valorTotal, pagamentoForma)
-values (4, '1', '129.90', 'crédito');
-select * from tb_vendas;
+insert into endereco(rua, numero, bairro, cidade, estado)
+values ('General Osorio', 1283, 'Velha', 'Blumenau', 'SC'),
+('Rod. Jorge Fortulino', 07, 'Lagoa dos Esteves', 'Balneário Rincão', 'SC'),
+('Av. Itajuba, Paralela BR 101', 2311, 'Itajubá', 'Barra Velha', 'SC'),
+('Rod. Antônio Heil', 5320, 'Limoeiro', 'Brusque', 'SC'),
+('Rod. Antônio Heil', 339, 'Centro 2', 'Brusque', 'SC');
+select * from endereco;
+
+insert into clientes(nome, cpf, email, telefone, endereco_id) 
+values('Karina', '088.254.449-74', 'karina@gmail.com', '(47)99616-1518', 1),
+('Bruno', '256.842.015-32', 'bruno@gmail.com', '(47)99607-3075', 2), 
+('Felipe', '354.789.654-20', 'felipe@gmail.com', '(47)99780-0128', 3), 
+('Carolina', '658.426.987-82', 'carol@gmail.com', '(47)99629-5384', 3);
+select * from clientes;
+
+insert into fornecedores(nomeFantasia, cnpj, email, telefone, endereco_id)
+values('Aradefe', '82.120.460/0001-18', 'contato@aradefe.com', '(47)3255-0000', 4),
+('JLM Tecidos', '04.957.761/0001-97', 'contato@jlmtecidos.com', '(47) 3351-1222', 5);
+select * from fornecedores;
+
+insert into categorias(descricaoCategoria) values('Blusas'), ('Calças'), ('Shorts'), ('Saias'), ('Vestidos');
+select * from categorias;
+
+insert into produtos(descricaoProduto, unidadeMedida, categorias_id)
+values('camiseta polo', 'pc', 1 ), ('saia curta', 'pc', 4),
+('vestido de alça midi', 'pc', 5);
+select * from produtos;
+
+insert into estoque(produtos_id, tamanhoProduto, corProduto, quantidadeEstoque)
+values(1, 'P', 'Branco', '15'), (1, 'M', 'Branco', '15'), (1, 'G', 'Branco', '10'), 
+(2, 'P', 'Nude', '25'), (2, 'M', 'Nude', '25'), (2, 'G', 'Nude', '20'),
+(3, 'P', 'Verde', '12'), (3, 'M', 'Verde', '12'), (3, 'G', 'Verde', '8');
+select * from estoque;
+
+insert into fornecedores_produtos(fornecedores_id, produtos_id, codigoProdutoFornecedor, unidadeMedidaFornecedor, valorUnitario)
+values (2, 3, '325V', 'pc', 120.00);
+select * from fornecedores_produtos;
+
+insert into vendas(clientes_id, quantidadeProdutos, valorVenda, formaPagamento)
+values (4, 1, 240.00, 'crédito'), (2, 1, 100.00, 'crédito'), (1, 1, 50.00, 'pix');
+select * from vendas;
+-- valor de venda coloquei o dobro do valor de compra
