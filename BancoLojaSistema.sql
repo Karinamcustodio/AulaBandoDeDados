@@ -41,7 +41,7 @@ nome varchar(100) not null,
 unidade varchar(10) not null,
 tamanho varchar(10),
 cor varchar(45),
-quantidade int not null,
+quantidadeEstoque int not null,
 valorTotal decimal not null not null,
 tb_categorias_id int not null,
 foreign key(tb_categorias_id) references tb_categorias(id),
@@ -133,10 +133,17 @@ values('Aradefe', '82120460000118', 'contato@aradefe.com', '(47)3255-0000', 'Rod
 ('JLM Tecidos', '04957761000197', 'contato@jlmtecidos.com', '(47) 3351-1222', 'Rod. Antônio Heil', '339', 'Centro 2', 'Brusque', 'SC');
 select * from tb_fornecedores;
 
-insert into tb_produtos(nome, unidade, tamanho, cor, quantidade, valorTotal, tb_categorias_id)
-values('camiseta polo', 'pc', 'G', 'Branco', '10', '499.00', '1' ),
-('saia curta', 'pc', 'P', 'Nude', '25', '822.50', '4'),
-('vestido de alça midi', 'pc', 'M', 'Verde', '12', '1558.80', '5');
+insert into tb_produtos(nome, unidade, tamanho, cor, quantidadeEstoque, valorTotal, tb_categorias_id)
+values('camiseta polo', 'pc', 'G', 'Branco', '10', '499.00', 1 ),
+('saia curta', 'pc', 'P', 'Nude', '25', '822.50', 4),
+('vestido de alça midi', 'pc', 'M', 'Verde', '12', '1558.80', 5);
 select * from tb_produtos;
 
+alter table tb_fornecedores_tb_produtos add column valorUnitario decimal(6,2);
+insert into tb_fornecedores_tb_produtos(tb_fornecedores_id, tb_produtos_id, codigo, unidade, valorUnitario)
+values (2, 3, '325V', 'pc', 129.90);
+select * from tb_fornecedores_tb_produtos;
 
+insert into tb_vendas(tb_clientes_id, quantidade, valorTotal, pagamentoForma)
+values (4, '1', '129.90', 'crédito');
+select * from tb_vendas;
