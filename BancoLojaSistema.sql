@@ -66,26 +66,23 @@ alter table fornecedores_produtos add constraint fk_produtosFornecedores foreign
 create table vendas(
 id int primary key auto_increment,
 clientes_id int not null,
-quantidadeProdutos int not null,
-valorTotal decimal(10,2) not null,
-formaPagamento varchar(45) not null
+formaPagamento varchar(45) not null,
+condicoesPagamento varchar(20) not null
 );
 
 alter table vendas add constraint fk_clientes foreign key (clientes_id) references clientes(id);
 
 create table compras(
 id int primary key auto_increment,
-quantidadeProdutos int not null,
-valorTotal decimal(10,2) not null,
-formaPagamento varchar(45) not null
+formaPagamento varchar(45) not null,
+condicoesPagamento varchar(20) not null
 );
 
 create table compras_produtos(
 compras_id int,
 produtos_id int,
 quantidadeProdutos int not null,
-valorCompra decimal(6,2) not null,
-unidadeMedida varchar(10) not null
+valorCompra decimal(6,2) not null
 );
 
 alter table compras_produtos add constraint fk_compras foreign key (compras_id) references compras(id);
@@ -95,26 +92,25 @@ create table vendas_produtos(
 vendas_id int not null,
 produtos_id int not null,
 quantidadeProdutos int not null,
-valorVenda decimal(6,2) not null,
-unidadeMedida varchar(10) not null
+valorVenda decimal(6,2) not null
 );
 
 alter table vendas_produtos add constraint fk_vendas foreign key(vendas_id) references vendas(id);
 alter table vendas_produtos add constraint fk_produtosVendas foreign key(produtos_id) references produtos(id);
 
-create table contasAPagar(
+create table contasPagar(
 id int primary key auto_increment,
 compras_id int not null 
 );
 
-alter table contasAPagar add constraint fk_comprasPagar foreign key (compras_id) references compras(id);
+alter table contasPagar add constraint fk_comprasPagar foreign key (compras_id) references compras(id);
 
-create table contasAReceber(
+create table contasReceber(
 id int primary key auto_increment,
 vendas_id int not null
 );
 
-alter table contasAReceber add constraint fk_vendasPagar foreign key (vendas_id) references vendas(id);
+alter table contasReceber add constraint fk_vendasPagar foreign key (vendas_id) references vendas(id);
 
 insert into endereco(rua, numero, bairro, cidade, estado)
 values ('General Osorio', 1283, 'Velha', 'Blumenau', 'SC'),
@@ -145,16 +141,33 @@ values('camiseta polo', 'pc', 1 ), ('saia curta', 'pc', 4),
 select * from produtos;
 
 insert into estoque(produtos_id, tamanhoProduto, corProduto, quantidadeEstoque)
-values(1, 'P', 'Branco', '15'), (1, 'M', 'Branco', '15'), (1, 'G', 'Branco', '10'), 
-(2, 'P', 'Nude', '25'), (2, 'M', 'Nude', '25'), (2, 'G', 'Nude', '20'),
-(3, 'P', 'Verde', '12'), (3, 'M', 'Verde', '12'), (3, 'G', 'Verde', '8');
+values(1, 'P', 'Branco', 15), (1, 'M', 'Branco', 15), (1, 'G', 'Branco', 10), 
+(2, 'P', 'Nude', 25), (2, 'M', 'Nude', 25), (2, 'G', 'Nude', 20),
+(3, 'P', 'Verde', 12), (3, 'M', 'Verde', 12), (3, 'G', 'Verde', 8);
 select * from estoque;
 
 insert into fornecedores_produtos(fornecedores_id, produtos_id, codigoProdutoFornecedor, unidadeMedidaFornecedor, valorUnitario)
-values (2, 3, '325V', 'pc', 120.00);
+values(2, 3, '325V', 'pc', 120.00);
 select * from fornecedores_produtos;
 
-insert into vendas(clientes_id, quantidadeProdutos, valorVenda, formaPagamento)
-values (4, 1, 240.00, 'crédito'), (2, 1, 100.00, 'crédito'), (1, 1, 50.00, 'pix');
+insert into vendas(clientes_id, formaPagamento, condicoesPagamento)
+values(4, 'crédito', '3 parcelas'), (2, 'crédito', '1 parcela'), (1, 'pix', 'a vista');
 select * from vendas;
--- valor de venda coloquei o dobro do valor de compra
+
+insert into compras(formaPagamento, condicoesPagamento)
+values ('crédito', '2 parcelas');
+select * from compras;
+
+insert into compras_produtos(compras_id, produtos_id, quantidadeProdutos, valorCompra)
+values(1, 2, 5, 127.50 );
+select * from compras_produtos;
+
+insert into vendas_produtos(vendas_id, produtos_id, quantidadeProdutos, valorVenda)
+values(1, 3, 1, 240.00), (2, 1, 1, 100.00), (3, 2, 1, 51.00);
+select * from vendas_produtos;
+
+insert into contasPagar(compras_id) values(1);
+select * from contasPagar;
+
+insert into contasReceber(vendas_id) values(1), (2), (3);
+select * from contasReceber;
