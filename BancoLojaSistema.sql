@@ -37,6 +37,7 @@ create table produtos(
 id int primary key auto_increment, 
 descricaoProduto varchar(100) not null,
 unidadeMedida varchar(10) not null,
+valorVenda decimal(6,2) not null,
 categorias_id int not null
 );
 
@@ -79,10 +80,12 @@ condicoesPagamento varchar(20) not null
 );
 
 create table compras_produtos(
-compras_id int,
-produtos_id int,
-quantidadeProdutos int not null,
-valorCompra decimal(6,2) not null
+compras_id int not null,
+produtos_id int not null,
+tamanhoProduto varchar(10),
+corProduto varchar(45),
+quantidadeProduto int not null,
+valorTotalCompra decimal(6,2) not null
 );
 
 alter table compras_produtos add constraint fk_compras foreign key (compras_id) references compras(id);
@@ -91,8 +94,10 @@ alter table compras_produtos add constraint fk_produtosCompras foreign key (prod
 create table vendas_produtos(
 vendas_id int not null,
 produtos_id int not null,
-quantidadeProdutos int not null,
-valorVenda decimal(6,2) not null
+tamanhoProduto varchar(10),
+corProduto varchar(45),
+quantidadeProduto int not null,
+valorTotalVenda decimal(6,2) not null
 );
 
 alter table vendas_produtos add constraint fk_vendas foreign key(vendas_id) references vendas(id);
@@ -110,7 +115,7 @@ id int primary key auto_increment,
 vendas_id int not null
 );
 
-alter table contasReceber add constraint fk_vendasPagar foreign key (vendas_id) references vendas(id);
+alter table contasReceber add constraint fk_vendasReceber foreign key (vendas_id) references vendas(id);
 
 insert into endereco(rua, numero, bairro, cidade, estado)
 values ('General Osorio', 1283, 'Velha', 'Blumenau', 'SC'),
@@ -135,9 +140,9 @@ select * from fornecedores;
 insert into categorias(descricaoCategoria) values('Blusas'), ('Calças'), ('Shorts'), ('Saias'), ('Vestidos');
 select * from categorias;
 
-insert into produtos(descricaoProduto, unidadeMedida, categorias_id)
-values('camiseta polo', 'pc', 1 ), ('saia curta', 'pc', 4),
-('vestido de alça midi', 'pc', 5);
+insert into produtos(descricaoProduto, unidadeMedida, valorVenda, categorias_id )
+values('camiseta polo', 'pc', 100.00, 1), ('saia curta', 'pc', 51.00, 4),
+('vestido de alça midi', 'pc', 240.00, 5);
 select * from produtos;
 
 insert into estoque(produtos_id, tamanhoProduto, corProduto, quantidadeEstoque)
@@ -158,12 +163,12 @@ insert into compras(formaPagamento, condicoesPagamento)
 values ('crédito', '2 parcelas');
 select * from compras;
 
-insert into compras_produtos(compras_id, produtos_id, quantidadeProdutos, valorCompra)
-values(1, 2, 5, 127.50 );
+insert into compras_produtos(compras_id, produtos_id, tamanhoProduto, corProduto, quantidadeProduto, valorTotalCompra)
+values(1, 3, 'M', 'Verde', 5, 600.00 );
 select * from compras_produtos;
 
-insert into vendas_produtos(vendas_id, produtos_id, quantidadeProdutos, valorVenda)
-values(1, 3, 1, 240.00), (2, 1, 1, 100.00), (3, 2, 1, 51.00);
+insert into vendas_produtos(vendas_id, produtos_id, tamanhoProduto, corProduto, quantidadeProduto, valorTotalVenda)
+values(1, 3, 'P', 'Verde', 1, 391.00), (1, 1, 'P', 'Branco', 1, 391.00), (1, 2, 'P', 'Nude', 1, 391.00), (2, 1, 'M', 'Branco', 1, 100.00), (3, 2, 'G', 'Nude', 1, 51.00);
 select * from vendas_produtos;
 
 insert into contasPagar(compras_id) values(1);
@@ -171,3 +176,13 @@ select * from contasPagar;
 
 insert into contasReceber(vendas_id) values(1), (2), (3);
 select * from contasReceber;
+
+/*Tabela Contas a receber com todas as informações desejadas*/
+select contasReceber.id as IdReceber, vendas.id as IdVenda, clientes.nome as Cliente, produtos.descricaoProduto as Produto, categorias.descricaoCategoria as Categoria, produtos.unidadeMedida as Unidade, vendas_produtos.tamanhoProduto as Tamanho, vendas_produtos.corProduto as Cor, produtos.valorVenda as PreçoVenda, vendas_produtos.quantidadeProduto as Quantidade, vendas_produtos.valorTotalVenda as ValorTotal, vendas.formaPagamento as Pagamento, vendas.condicoesPagamento as Condições 
+from contasReceber, vendas, clientes, produtos, categorias, vendas_produtos
+where contasReceber.vendas_id = vendas.id && vendas.clientes_id = clientes.id && produtos.categorias_id = categorias.id && vendas_produtos.vendas_id = vendas.id && vendas_produtos.produtos_id = produtos.id;
+
+/*Tabela Contas a pagar com todas as informações desejadas*/
+select contasPagar.id as IdPagar, compras.id as IdCompras, fornecedores.nomeFantasia as Fornecedor, produtos.descricaoProduto as Produto, categorias.descricaoCategoria as Categoria, fornecedores_produtos.codigoProdutoFornecedor as Código, fornecedores_produtos.unidadeMedidaFornecedor as Unidade, compras_produtos.tamanhoProduto as Tamanho, compras_produtos.corProduto as Cor, fornecedores_produtos.valorUnitario as PreçoCompra, compras_produtos.quantidadeProduto as Quantidade, compras_produtos.valorTotalCompra as ValorTotal, compras.formaPagamento as Pagamento, compras.condicoesPagamento as Condições 
+from contasPagar, compras, fornecedores, produtos, categorias, fornecedores_produtos, compras_produtos 
+where contasPagar.compras_id = compras.id && fornecedores_produtos.fornecedores_id = fornecedores.id && produtos.categorias_id = categorias.id && compras_produtos.compras_id = compras.id && compras_produtos.produtos_id = produtos.id;
