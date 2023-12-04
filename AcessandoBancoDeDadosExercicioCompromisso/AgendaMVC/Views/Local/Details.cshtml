@@ -1,0 +1,69 @@
+﻿@model AgendaMVC.Models.Local
+@{
+    ViewData["Title"] = "Informações do local";
+}
+<h1>@ViewData["Title"]</h1>
+
+<div>
+    <p>
+        <span class="fw-bold">
+            @Html.DisplayNameFor(model => model.Id):
+        </span>
+        @Html.DisplayFor(model => model.Id)
+    </p>
+
+    <p>
+        <span class="fw-bold">
+            @Html.DisplayNameFor(model => model.NomeLocal):
+        </span>
+        @Html.DisplayFor(model => model.NomeLocal)
+    </p>
+
+    <p>
+        <span class="fw-bold">
+            @Html.DisplayNameFor(model => model.Rua):
+        </span>
+        @Html.DisplayFor(model => model.Rua)
+    </p>
+
+    <p>
+        <span class="fw-bold">
+            @Html.DisplayNameFor(model => model.Numero):
+        </span>
+        @Html.DisplayFor(model => model.Numero)
+    </p>
+
+    <p>
+        <span class="fw-bold">
+            @Html.DisplayNameFor(model => model.Bairro):
+        </span>
+        @Html.DisplayFor(model => model.Bairro)
+    </p>
+
+    <p>
+        <span class="fw-bold">
+            @Html.DisplayNameFor(model => model.Cidade):
+        </span>
+        @Html.DisplayFor(model => model.Cidade)
+    </p>
+
+    <p>
+        <span class="fw-bold">
+            @Html.DisplayNameFor(model => model.Uf):
+        </span>
+        @Html.DisplayFor(model => model.Uf)
+    </p>
+
+    <p>
+        <span class="fw-bold">
+            @Html.DisplayNameFor(model => model.Cep):
+        </span>
+        @Html.DisplayFor(model => model.Cep)
+    </p>
+
+    @Html.ActionLink("Editar", "Edit", new {id=Model.Id})
+
+</div>
+<div>
+    <a asp-action="Index">Voltar a lista</a>
+</div>

@@ -1,0 +1,43 @@
+@model IEnumerable<AgendaMVC.Models.Local>
+    @{
+    ViewData["Title"] = "Local";
+    }
+    <h1 class="text-center">@ViewData["title"]</h1>
+    <p>
+        <a asp-action="Create">Cadastrar</a>
+    </p>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.Id)</th>
+                <th>@Html.DisplayNameFor(model => model.NomeLocal)</th>
+                <th>@Html.DisplayNameFor(model => model.Rua)</th>
+                <th>@Html.DisplayNameFor(model => model.Numero)</th>
+                <th>@Html.DisplayNameFor(model => model.Bairro)</th>
+                <th>@Html.DisplayNameFor(model => model.Cidade)</th>
+                <th>@Html.DisplayNameFor(model => model.Uf)</th>
+                <th>@Html.DisplayNameFor(model => model.Cep)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(model => item.Id)</td>
+                <td>@Html.DisplayFor(model => item.NomeLocal)</td>
+                <td>@Html.DisplayFor(model => item.Rua)</td>
+                <td>@Html.DisplayFor(model => item.Numero)</td>
+                <td>@Html.DisplayFor(model => item.Bairro)</td>
+                <td>@Html.DisplayFor(model => item.Cidade)</td>
+                <td>@Html.DisplayFor(model => item.Uf)</td>
+                <td>@Html.DisplayFor(model => item.Cep)</td>
+                <td>
+                    @Html.ActionLink("Editar", "Edit", new {id=item.Id}) |
+                    @Html.ActionLink("Informações", "Details", new {id=item.Id}) |
+                    @Html.ActionLink("Deletar", "Delete", new {id=item.Id}, new { onclick = "return confirm('Tem certeza que deseja excluir o contato?')"})
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>

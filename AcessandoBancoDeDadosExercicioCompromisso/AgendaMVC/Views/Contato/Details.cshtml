@@ -1,0 +1,37 @@
+﻿@model AgendaMVC.Models.Contato
+@{
+    ViewData["Title"] = "Informações do contato";
+}
+<h1>@ViewData["Title"]</h1>
+
+<div>
+    <p>
+    <span class="fw-bold">
+        @Html.DisplayNameFor(model => model.Id): </span>
+        @Html.DisplayFor(model => model.Id)
+    </p>
+    
+    <p>
+    <span class="fw-bold">
+        @Html.DisplayNameFor(model => model.Nome): </span>
+        @Html.DisplayFor(model => model.Nome)
+    </p>
+
+    <p>
+    <span class="fw-bold">
+        @Html.DisplayNameFor(model => model.Email): </span> 
+        @Html.DisplayFor(model => model.Email)
+    </p>
+
+    <p>
+    <span class="fw-bold">
+        @Html.DisplayNameFor(model => model.Telefone): </span>
+        @Html.DisplayFor(model => model.Telefone)
+    </p>
+
+    @Html.ActionLink("Editar", "Edit", new {id=Model.Id})
+
+</div>
+<div>
+    <a asp-action="Index">Voltar a lista</a>
+</div>

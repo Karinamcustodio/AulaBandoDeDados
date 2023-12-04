@@ -1,0 +1,40 @@
+﻿@model IEnumerable<AgendaMVC.Models.Compromisso>
+@{
+    ViewData["title"] = "Compromissos";
+}
+
+<h1 class="text-center">@ViewData["title"]</h1>
+<p>
+    <a asp-action="Create">Cadastrar</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Id)</th>
+            <th>@Html.DisplayNameFor(model => model.Descricao)</th>
+            <th>@Html.DisplayNameFor(model => model.DataHora)</th>
+            <th>@Html.DisplayNameFor(model => model.Contato.Nome)</th>
+            <th>@Html.DisplayNameFor(model => model.Contato.Email)</th>
+            <th>@Html.DisplayNameFor(model => model.Local.NomeLocal)</th>
+        </tr>
+    <tbody>
+            @foreach (var item in Model)
+            {
+            <tr>
+                <td>@Html.DisplayFor(model => item.Id)</td>
+                <td>@Html.DisplayFor(model => item.Descricao)</td>
+                <td>@Html.DisplayFor(model => item.DataHora)</td>
+                <td>@Html.DisplayFor(model => item.Contato.Nome)</td>
+                <td>@Html.DisplayFor(model => item.Contato.Email)</td>
+                <td>@Html.DisplayFor(model => item.Local.NomeLocal)</td>
+                <td>
+                        @Html.ActionLink("Editar", "Edit", new {id=item.Id}) |
+                        @Html.ActionLink("Informações", "Details", new {id=item.Id}) |
+                        @Html.ActionLink("Deletar", "Delete", new {id=item.Id}, new { onclick = "return confirm('Tem certeza que deseja excluir o contato?')"})
+                </td>
+            </tr>
+            }
+    </tbody>
+    </thead>
+</table>
